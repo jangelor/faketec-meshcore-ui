@@ -1,3 +1,11 @@
+# FakeTec MeshCore UI v0.5.2 experimental source preview
+
+This iteration adds saved Room Server destinations to Quick Msgs, improves one-button navigation (single click next, double click previous), and includes 15 revised presets. It preserves v0.5.1 Link Check, OLED voltage, BLE PIN, and acknowledgement features. **The room user must log in with an app and have permission to post.** A queued message does not prove acceptance; a matching room ACK indicates the server received it.
+
+This package provides source and a one-command local build script. No compiled v0.5.2 UF2 is included until a physical firmware build is supplied and field-tested. Never reuse the v0.5.1 binary under a v0.5.2 name.
+
+---
+
 # FakeTec MeshCore UI v0.5.1 — Source preview
 
 This experimental **source-only** preview adds a repeatable on-device repeater Link Check and simplifies Quick Msg confirmation.

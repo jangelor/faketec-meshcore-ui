@@ -1,22 +1,22 @@
 {
-  "version": "FakeTec UI v0.3",
+  "version": "FakeTec UI next iteration presets",
   "append_preset_marker": true,
   "preset_marker": " [Quick Msg]",
   "presets": [
-    "OK",
+    "OK/Tnx/Acknowledged",
     "Yes",
     "No",
     "Need assistance",
     "I'm safe",
-    "I'm on my way",
-    "Arrived at destination",
-    "Checking in",
+    "Mobile/OTW, might have poor rptr coverage.",
+    "Arrived at destination.",
+    "Hello/Checking in.",
     "Where are you?",
     "CQ CQ, can anyone copy my message?",
-    "Stand by",
-    "Battery low",
-    "Will reply in app later",
-    "Returning home",
-    "Please reply to confirm you've read this"
+    "Stand by/wait.",
+    "Battery low.",
+    "Txting from companion radio. Will reply in app later.",
+    "Returning home.",
+    "Please reply to confirm you've read this."
   ]
 }

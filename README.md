@@ -1,3 +1,13 @@
+> **Latest experimental development kit: v0.5.3.** For channel relay echo detection and the one-command Mac build, read [README_V053.md](README_V053.md). The available GitHub v0.5.1 release remains a separate version; this kit contains source, not a compiled UF2.
+
+# FakeTec UI v0.5.2 experimental source update
+
+**New:** Quick Msgs can target saved Room Server contacts as well as configured channels. Use **one click to move forward, two quick clicks to move backward, and hold to select**. A separate Back row is provided. A room login through the phone app and permission to post are still necessary. The room server must acknowledge a post before the device can confirm that it was received. See [README_V052.md](README_V052.md) for safety, details, and testing.
+
+**Build with one command** on the previously configured Mac: `bash ~/Downloads/faketec-ui-v052/build-faketec-v052.sh` after extracting this ZIP into Downloads. The script includes the exact 15 new Quick Msg texts and copies the UF2 into `~/Downloads/faketec-release/` upon successful compilation. No Flash or upload occurs automatically.
+
+---
+
 # FakeTec MeshCore UI v0.5.1
 
 **Status:** Source-only, experimental build kit. This version has passed offline patch checks but **has not been compiled or hardware-tested here**. The previously published v0.4.1 UF2 must not be relabeled as v0.5.1.
