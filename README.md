@@ -1,58 +1,55 @@
-# FakeTec MeshCore UI v0.4.1 build kit
+# FakeTec MeshCore UI v0.5.1
 
-**Target:** FakeTec-compatible nRF52840 ProMicro MeshCore companion board (NOT Heltec V4), MeshCore 1.18 commit `81dbae592ffad40b4212bc0b37e82b38da08f4bc`, PlatformIO environment `ProMicro_companion_radio_ble`.
+**Status:** Source-only, experimental build kit. This version has passed offline patch checks but **has not been compiled or hardware-tested here**. The previously published v0.4.1 UF2 must not be relabeled as v0.5.1.
 
-**Status:** Offline patch tests pass. Firmware has **not** been compiled here, and v0.4.1 has **not** been tested on a physical FakeTec. This package is a source build kit, not a UF2 image. Confirm hardware, bootloader, and a valid backup before flashing one test unit.
+**Target:** FakeTec-compatible nRF52840 ProMicro companion board, matching OLED and UF2 bootloader. Upstream MeshCore 1.18, pinned commit `81dbae592ffad40b4212bc0b37e82b38da08f4bc`. PlatformIO target `ProMicro_companion_radio_ble`. Not for Heltec V4.
 
-## Changes in v0.4.1
+## What's new
 
-- **Status screen access:** long-hold User on the radio-status page (frequency, spreading factor, TX power, noise floor) to open the **Quick Actions** menu. It continues to work from the main/home and recent-adverts pages.
-- **Rename:** the menu item `Canned msgs` is now `Quick Msgs`; the preset screen heading is `QUICK MSGS`. The C++ method was renamed from `openCanned()` to `openQuickMsgs()`, including declaration and call sites.
-- **Safety in Quick Actions:** a double-click/previous-key event advances the menu selection instead of exiting. Long-hold the explicit **Back** row to exit without sending.
-- All existing v0.4 behavior remains: 15 customizable presets, 12-message RAM inbox, contextual replies, explicit channel picker, optional ` [Quick Msg]` suffix, and hold-to-select SEND/CANCEL. No automatic transmissions occur when opening or navigating menus.
+- **SEND comes first:** the confirmation screen now lists **SEND → `[Quick Msg]` ON/OFF → CANCEL**. On entering confirmation, SEND is selected. One short press selects the marker toggle; hold to toggle it. A deliberate hold on SEND remains necessary to transmit.
+- **Marker defaults ON:** `faketec_presets_v03.json` now sets `append_preset_marker: true`. The setting can be changed for the current device session using the confirmation menu; on reboot it returns to the compiled default.
+- **No Link Check cooldown:** the one-minute UI cooldown is removed. From Home, Recent Adverts, or Radio Status, hold to open Quick Actions; **Link Check** is the first selected row, so hold again to start discovery. On the results screen, **hold to run another check**, or short press to return to Home. Checks are user-initiated and one request is sent per deliberate hold. MeshCore's own airtime/queue limits remain applicable.
+- **Less ambiguous Home dashboard:** `MSG` (unread), `HEARD` (direct repeater advertisements received during the last 30 minutes, limited cache), and `RPT FOUND` (repeaters responding to the last active discovery, including scans from the dedicated Find repeaters page). Results have an age and become stale after 10 minutes. `BEST` names the responder ranked by the weaker of its incoming/outgoing SNR; when there is no fresh responding repeater, `SEEN` names the last directly advertised repeater when available.
+- **Voltage in place of the battery icon:** The top-right of the Home, Radio Status, Recent Adverts, Link Check, message-preview, Inbox, Quick Msgs, and confirmation screens shows the measured voltage (for example `3.91V`). USB charging and muted-buzzer symbols remain on Home pages. A `--.--V` placeholder appears if the board reports zero millivolts. The battery percent is removed from the OLED header. This uses the board ADC and depends on its calibration, not a dedicated fuel gauge.
+- **Direct-message ACK indication:** When sending an on-device preset as a direct reply, the radio shows `DM: awaiting ACK`. When the MeshCore listener receives the matching ACK token, it briefly shows `DM ACK received`, including with the phone disconnected. It tracks up to four recent direct sends in RAM for five minutes, without persistent message history. Channel messages do not have these per-recipient ACKs. No forwarded-repeater count is claimed.
+- **BLE PIN restored:** if no phone is connected and a nonzero pairing PIN is active, the last Home row shows `PIN:XXXXXX` and the battery voltage. Otherwise, it shows BLE connection status and battery voltage, or fresh SNR readings if connected. The measured voltage replaces the battery icon throughout the regular OLED UI.
 
-## Controls
+## Home-screen layout
 
-From **Home, Recent Adverts, or Radio Status**, long-hold User to open Quick Actions. Short-press cycles: `Inbox` → `Quick Msgs` → `Find repeaters` → `Advertise` → `Back`. Long-hold selects. Double-click is treated as Next while in Quick Actions rather than exiting.
+On the 128×64 OLED, the four body rows are approximately:
 
-Within Quick Msgs, choose the desired configured channel, select a message, and review the confirmation screen. The first choice toggles the `[Quick Msg]` marker, the second is **SEND**, and the third is **CANCEL**. Short-press moves between choices; long-hold activates the highlighted choice. Only a deliberate long-hold of **SEND** requests transmission. CANCEL returns to the preset picker.
+```
+MSG:0 HEARD:0
+RPT FOUND:2 0m
+BEST: Antipolo RPT
+I:+8.0 O:+5.0dB
+```
 
-The `[Quick Msg]` suffix defaults to OFF at each boot, as defined in `faketec_presets_v03.json`. Switching it ON or OFF using the device lasts for the current power session. The change **does not persist across reboots**. Altering the presets still requires rebuilding firmware.
+When disconnected with a pairing PIN available, the last row is replaced by a display such as `PIN:123456 B:3.90V`. The PIN is displayed **only on the user's device**. It is not uploaded or sent to GitHub. The name, counts, and readings are examples; live figures come from MeshCore's local state.
 
-Messages queued to MeshCore are not necessarily delivered or read. The firmware reports queue acceptance, not human acknowledgment.
+`HEARD:0` can coexist with `RPT FOUND:2`, because passive advertisements and active discovery responses are different measurements. `BEST` is a *radio-link* ranking, not a distance estimate or proof that messages were delivered.
 
 ## Build on macOS
 
-The script uses your already working checkout at `~/faketec-ui/MeshCore`. Unzip this package into `~/Downloads/faketec-ui-v041`, then run:
+Download and extract the v0.5.1 build kit (`~/Downloads/faketec-ui-v051`) or GitHub source package (`~/Downloads/faketec-meshcore-ui-v051`). On the Mac with the existing MeshCore checkout at `~/faketec-ui/MeshCore`:
 
 ```bash
-cd ~/Downloads/faketec-ui-v041
+cd ~/Downloads/faketec-meshcore-ui-v051  # or ~/Downloads/faketec-ui-v051
+python3 test_v03_patch.py
 python3 test_v04_patch.py
 python3 test_v041_patch.py
-bash build-faketec-v041.sh
+python3 test_v05_patch.py
+python3 test_v051_patch.py
+python3 test_v051_ack_voltage_patch.py
+bash build-faketec-v051.sh
 ```
 
-The builder checks or applies patches in order: **v0.1 → v0.2 → v0.3 → v0.4 → v0.4.1**. Existing v0.4 sources are updated in place, with one-time `.v041-backup` copies of the C++ files. Any existing UF2 is copied into `~/faketec-ui/backups/` before the output is removed and regenerated.
+The builder also migrates an existing v0.5.1 tree that still displays `REPLY` to `RPT FOUND`, so rebuilding against previously patched sources is safe. It applies/checks patches in order v0.1 → v0.2 → v0.3 → v0.4 → v0.4.1 → v0.5 → v0.5.1 UX → ACK/voltage, backs up any previous UF2, compiles for `ProMicro_companion_radio_ble`, and creates `~/faketec-ui/MeshCore/.pio/build/ProMicro_companion_radio_ble/firmware.uf2` only when compilation succeeds. It does **not** flash the radio.
 
-The UF2 is produced only if the build succeeds:
+If you previously customized `faketec_presets_v03.json` in another folder, merge your custom messages into this package's JSON first. The included configuration will be applied to the source during the build.
 
-```text
-~/faketec-ui/MeshCore/.pio/build/ProMicro_companion_radio_ble/firmware.uf2
-```
+## Field tests before public binary release
 
-The build script prints a SHA-256 checksum. **It does not flash the device.** Do not use an older UF2 if compilation fails.
+Test on one matching FakeTec: normal status startup, Link Check twice consecutively (no 60-second cooldown), discovery responses and no-reply case, HOME counts and stale behavior, PIN visibility with phone disconnected, BLE reconnect, voltage across all screens, direct-send ACK pending and matching ACK alerts with/without phone, Quick Msg ON/OFF and startup default after reboot, SEND-first selection, CANCEL behavior, and safe short/double presses. Preserve a known-good firmware and identity/settings backup. Do not publish any device private keys or backups.
 
-To target an existing alternate checkout *already patched through v0.2*, set `FAKETEC_MESHCORE_ROOT` before invoking the build script. Earlier v0.1/v0.2 patches have a fixed default home path and are not safe to run automatically against another checkout.
-
-## Test one device first
-
-Back up the known-good firmware and device identity/configuration. Verify the nRF52840 bootloader on the actual unit, build the correct target, and flash just one unit. Check status-page access, Home and Recent access, Quick Msgs and inbox, fast taps/double-clicks, Back behavior, `[Quick Msg]` ON/OFF, SEND/CANCEL, BLE reconnection, a direct-message reply, and a configured-channel message. Confirm both sent and received text with another device or app. Do not deploy to all four units until testing passes.
-
-## Files
-
-- `build-faketec-v041.sh` runs the build and protects the previous UF2.
-- `faketec_ui_v0_4_1_status_patch.py` implements status access, naming, and Quick Actions protection.
-- `test_v041_patch.py` tests source-patch applicability, naming, navigation, and idempotence offline.
-- Earlier source patches and configuration are included, so the package can work with the established MeshCore checkout.
-
-This kit does not modify radio parameters, BLE protocol, cryptographic keys, flash partition layout, or the bootloader. It is experimental UI firmware intended for field evaluation, including resilience and emergency communications tests, where packet and application delivery should be verified independently.
+Based on open-source MeshCore; independent AI-assisted modification. Source build kit and documentation are provided for inspection and community testing.

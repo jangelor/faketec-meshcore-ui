@@ -1,0 +1,21 @@
+# Local Python/build artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pio/
+.DS_Store
+
+# Private board identities and backup files
+*.v01-backup
+*.v02-backup
+*.v03-backup
+*private-key*
+*nvs-backup*
+*.bin
+*.uf2
+*.hex
+
+# Generated temporary files and local overrides
+.tmp/
+*.local.json
