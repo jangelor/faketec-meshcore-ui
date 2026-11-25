@@ -7,11 +7,12 @@ with the v0.1 patch previously applied. Never flashes devices.
 Changes: 12-message RAM inbox, explicit channel picker, canned messages,
 contextual direct/channel replies, and second-hold send confirmation.
 """
+import os
 from pathlib import Path
 import sys
 import shutil
 
-root = Path.home() / 'faketec-ui' / 'MeshCore'
+root = Path(os.environ.get('FAKETEC_MESHCORE_ROOT', Path.home() / 'faketec-ui' / 'MeshCore'))
 cpp = root / 'examples/companion_radio/ui-new/UITask.cpp'
 hdr = root / 'examples/companion_radio/ui-new/UITask.h'
 marker = 'FAKETEC_UI_V02_MESSAGING'

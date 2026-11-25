@@ -1,10 +1,16 @@
+# Changelog
+
+## v0.5.4 (development preview)
+
+- Added an OLED ad hoc relay toggle to Quick Actions on the FakeTec ProMicro companion. Relays use the active LoRa profile and the local toggle starts off at boot.
+- The Home display shows `RLY` while the local forwarding toggle is on. Quick Msg channel echo continues to use `RELAY SEEN`.
+- Added a v0.5.4 UF2 builder that reuses the v0.5.3 preparation steps.
+
 ## v0.5.3 (experimental, source-only)
 
 - Detect a matching forwarded copy of the last Quick Msg channel transmission, using a packet hash observed in the pre-duplicate-filter receive hook. No repeater ACK or extra RF traffic.
 - OLED indications distinguish queued, transmitted/listening, relay seen, unconfirmed, and local transmit failure. Compact home status preserves disconnected BLE PIN.
 - Retains v0.5.2 saved room destinations and backward navigation.
-
-# Changelog
 
 ## v0.5.2 (source preview, requires compilation and hardware testing)
 

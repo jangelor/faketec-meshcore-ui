@@ -4,11 +4,12 @@
 Designed for MeshCore commit 81dbae592ffad40b4212bc0b37e82b38da08f4bc.
 No flashing or radio transmission is performed by this script.
 """
+import os
 from pathlib import Path
 import shutil
 import sys
 
-root = Path.home() / 'faketec-ui' / 'MeshCore'
+root = Path(os.environ.get('FAKETEC_MESHCORE_ROOT', Path.home() / 'faketec-ui' / 'MeshCore'))
 source = root / 'examples/companion_radio/ui-new/UITask.cpp'
 
 if not source.is_file():

@@ -1,4 +1,4 @@
-> **Latest experimental development kit: v0.5.3.** For channel relay echo detection and the one-command Mac build, read [README_V053.md](README_V053.md). The available GitHub v0.5.1 release remains a separate version; this kit contains source, not a compiled UF2.
+> **Latest development preview: v0.5.4.** The OLED can enable ad hoc relaying on the active LoRa profile. For build instructions and a bench test, see [README_V054.md](README_V054.md). For the channel relay echo added in v0.5.3, see [README_V053.md](README_V053.md).
 
 # FakeTec UI v0.5.2 experimental source update
 

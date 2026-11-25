@@ -3,8 +3,14 @@
 # Compile+UF2 only. Does NOT flash or alter bootloader, keys, or partitions.
 set -eu
 HERE="$(cd "$(dirname "$0")" && pwd)"
-ROOT="${FAKETEC_MESHCORE_ROOT:-$HOME/faketec-ui/MeshCore}"
+SOURCE_ROOT="${FAKETEC_MESHCORE_ROOT:-$HOME/faketec-ui/MeshCore}"
+ROOT="$(cd "$SOURCE_ROOT" && pwd)"
 CPP="$ROOT/examples/companion_radio/ui-new/UITask.cpp"
+export FAKETEC_MESHCORE_ROOT="$ROOT"
+case "${1:-}" in
+  ''|--prepare-only) ;;
+  *) echo 'Usage: bash build-faketec-v053.sh [--prepare-only]' >&2; exit 2 ;;
+esac
 if [ -f "$HOME/meshcore-flash/bin/activate" ]; then
   . "$HOME/meshcore-flash/bin/activate"
 fi
@@ -12,8 +18,8 @@ if [ ! -f "$CPP" ]; then
   echo "ERROR: MeshCore source missing: $CPP" >&2
   exit 1
 fi
-if [ "$ROOT" != "$HOME/faketec-ui/MeshCore" ] && ! grep -q 'FAKETEC_UI_V02_MESSAGING' "$CPP"; then
-  echo 'ERROR: alternate source root requires v0.1 and v0.2 already applied.' >&2
+if [ "${1:-}" != --prepare-only ] && grep -q 'isAdHocRelayEnabled()' "$CPP"; then
+  echo 'This source has ad hoc relay. Build it with build-faketec-v054.sh.' >&2
   exit 1
 fi
 cd "$ROOT"
@@ -47,6 +53,9 @@ python3 "$HERE/faketec_ui_v0_5_3_channel_relay_patch.py" --source-root "$ROOT"
 if [ -d .git ]; then
   git diff --check
   git diff --stat
+fi
+if [ "${1:-}" = --prepare-only ]; then
+  exit 0
 fi
 python -m platformio --version
 OUTPUT="$ROOT/.pio/build/ProMicro_companion_radio_ble/firmware.uf2"
