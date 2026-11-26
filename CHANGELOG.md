@@ -46,3 +46,12 @@ Additional v0.5.1 improvements:
 - Relay-forwarding counts are not available from normal outbound messages. Received hop count, when provided, does not identify every repeater that transmitted the packet.
 
 - Fixed rebuilds of previously patched v0.5.1 source so the legacy `REPLY` label is migrated to `RPT FOUND`; added a regression test.
+
+## v0.5.5
+
+- Added local Companion CLI relay control.
+- Added configurable persistent relay startup policy.
+- Synchronized OLED relay control with saved state.
+- Retained boot-OFF as the default policy.
+- Blocked custom relay control through remote LoRa CLI.
+- Initial hardware validation successful.
